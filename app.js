@@ -15,10 +15,28 @@ dotenv.config("./.env")
 
 const app = express();
 
-app.use(cors({
-    origin: 'http://localhost:5173', // your React app
-    credentials: true // 👈 this allows cookies to be sent
-}));
+const express = require("express");
+const cors = require("cors");
+
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://url-shortner-tau-beryl.vercel.app"
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // if you're using cookies or auth headers
+  })
+);
+
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
